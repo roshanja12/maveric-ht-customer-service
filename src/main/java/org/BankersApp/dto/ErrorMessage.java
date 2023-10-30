@@ -9,4 +9,8 @@ public class ErrorMessage {
 
         private String field;
         private String message;
+
+        public ErrorMessage(String message) {
+                this.message = message;
+        }
 }

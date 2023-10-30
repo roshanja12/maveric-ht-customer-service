@@ -48,7 +48,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public List<CustomerDTO> getAllCustomers()throws CustomeException {
+    public List<CustomerDTO> getAllCustomers() {
         logger.info("Service called for getCustomer all.......!");
         List<CustomerDTO> customerList= customerRepository.findAll().stream().map(this::entityToDTO).collect(Collectors.toList());
         logger.info("CustomerList++++++"+customerList);
@@ -58,7 +58,18 @@ public class CustomerService {
         }
         else
         {
-            throw new CustomeException("Not found in DB");
+            throw new CustomeException("Data not in DB");
+        }
+    }
+
+    @Transactional
+    public List<CustomerDTO> getCustomerByCriteria(String searchValue) {
+        List<CustomerDTO> customerList = customerRepository.getCustomerByCriteria(searchValue).stream().map(this::entityToDTO).collect(Collectors.toList());
+        logger.info("CustomerList" + customerList);
+        if (customerList.size() != 0) {
+            return customerList;
+        } else {
+            throw new CustomeException("Data not in DB");
         }
     }
 
@@ -76,17 +87,6 @@ public class CustomerService {
             throw new CustomeException("Customer with ID " + customer.getCustomerId() + " not found");
         }
     }
-
-    public List<CustomerDTO> getCustomerByCriteria(String searchValue) {
-        List<CustomerDTO> customerList = customerRepository.getCustomerByCriteria(searchValue).stream().map(this::entityToDTO).collect(Collectors.toList());
-        logger.info("CustomerList++++++" + customerList);
-        if (customerList.size() != 0) {
-            return customerList;
-        } else {
-            throw new CustomeException("Not found in DB");
-        }
-    }
-
 
     @Transactional
     public String deleteCustomer(Long customerId) throws CustomeException {
