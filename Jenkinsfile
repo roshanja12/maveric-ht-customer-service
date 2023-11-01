@@ -12,9 +12,9 @@ pipeline
             {
                 script {
                     
-                //sh 'chmod +x ./mvnw'
-                //sh './mvnw package -DskipTests '
-                //sh 'docker build -f src/main/docker/Dockerfile.jvm -t quarkus/customer-jvm .'
+                // sh 'chmod +x ./mvnw'
+                // sh './mvnw package -DskipTests '
+                sh 'docker build -f src/main/docker/Dockerfile.jvm -t quarkus/customer-jvm .'
             }
             }
         }
