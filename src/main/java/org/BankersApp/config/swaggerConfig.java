@@ -14,7 +14,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 info = @Info(title = "Customers_Api",
 description = "API for managing customer records",
 version = "1.0",
-contact = @Contact(name = "@mock",url = "https://mock")),
+    contact = @Contact(name = "@mock",url = " ")),
 externalDocs = @ExternalDocumentation( description= "All Customer account api code mention below",url = "https://mock"),
 tags= {
 @Tag(name = "Customers Api", description = "Public API")

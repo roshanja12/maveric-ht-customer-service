@@ -4,7 +4,6 @@ package org.BankersApp.util;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import org.BankersApp.dto.CustomerDTO;
 import org.BankersApp.dto.ErrorMessage;
 import org.BankersApp.dto.ResponseDTO;
 

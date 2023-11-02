@@ -1,7 +1,5 @@
 package org.BankersApp.exception;
 
-import lombok.Data;
-
 /**
  * @author ankushk
  */

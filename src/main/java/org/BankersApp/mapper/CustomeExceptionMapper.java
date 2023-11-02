@@ -2,7 +2,7 @@ package org.BankersApp.mapper;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
+
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -11,7 +11,7 @@ import org.BankersApp.dto.ErrorMessage;
 import org.BankersApp.exception.CustomeException;
 import org.BankersApp.util.CommonUtil;
 
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 /**
