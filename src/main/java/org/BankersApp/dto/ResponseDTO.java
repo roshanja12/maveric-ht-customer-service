@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonbPropertyOrder({ "status", "msg", "code", "errors", "data", "path", "timestamp" })
 public class ResponseDTO {
+
     private String status;
     private String msg;
     private int code;

@@ -1,15 +1,13 @@
 package org.BankersApp.repository;
-
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.BankersApp.entity.Customer;
-
 import java.util.List;
 
 @ApplicationScoped
-public class CustomerRepository implements PanacheRepository<Customer> {
+public class CustomerRepository implements PanacheRepositoryBase<Customer, Long> {
 
     @Inject
     EntityManager entityManager;
@@ -21,5 +19,8 @@ public class CustomerRepository implements PanacheRepository<Customer> {
         return entityManager.createNativeQuery(nativeQuery, Customer.class)
                 .setParameter("searchValue", "%" + searchValue + "%")
                 .getResultList();
+    }
+
+    public void merge(Customer existingCustomer) {
     }
 }

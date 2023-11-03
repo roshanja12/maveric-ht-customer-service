@@ -1,19 +1,15 @@
 package org.BankersApp.mapper;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.Provider;
-import org.hibernate.exception.ConstraintViolationException;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import org.BankersApp.entity.Customer;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
-
-@Provider
 public class ValidationExceptionHandler implements ExceptionMapper<ConstraintViolationException> {
-
-
     @Override
     public Response toResponse(ConstraintViolationException exception) {
         Map<String, Object> response = new HashMap<>();
@@ -22,7 +18,7 @@ public class ValidationExceptionHandler implements ExceptionMapper<ConstraintVio
         response.put("msg", "Customer creation failed!");
         response.put("errors", getValidationErrors(exception));
         response.put("data", null); // Replace with your actual response entity
-        response.put("path", "/api/v1/customers");
+        response.put("path", "/api/v1/customers/{customerId}");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         String timestamp = dateFormat.format(new Date());
         response.put("timestamp", timestamp);
@@ -31,22 +27,13 @@ public class ValidationExceptionHandler implements ExceptionMapper<ConstraintVio
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(response)
                 .build();
+
     }
-//    @Override
-//    public Response toResponse(ConstraintViolationException e) {
-//        List<> errorMessages = e.getConstraintViolations().stream()
-//                .map(constraintViolation -> new Response.ErrorMessage(constraintViolation.getPropertyPath().toString(), constraintViolation.getMessage()))
-//                .collect(Collectors.toList());
-//        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorResponse(errorMessages)).build();
-//    }
-
-
-
 
     private List<String> getValidationErrors(ConstraintViolationException exception) {
-
         List<String> errors = new ArrayList<>();
         errors.add(exception.getMessage());
         return errors;
     }
 }
+
