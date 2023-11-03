@@ -1,40 +1,43 @@
 package org.BankersApp.mapper;
 
-import jakarta.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Context;
+
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import org.BankersApp.dto.ErrorMessage;
 import org.BankersApp.exception.CustomeException;
+import org.BankersApp.util.CommonUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ankushk
  */
 
 @Provider
-public class CustomeExceptionMapper implements ExceptionMapper<CustomeException> {
+public class CustomeExceptionMapper implements ExceptionMapper<Exception> {
 
-    public Response toResponse(CustomeException exception) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "Failed");
-        response.put("code", Response.Status.NOT_FOUND.getStatusCode());
-        response.put("msg", "Data not found in DB");
-        response.put("errors",exception.getMessage());
-        response.put("data", null);
-        response.put("path", "/api/v1/customers");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String timestamp = dateFormat.format(new Date());
-        response.put("timestamp", timestamp);
+    @Inject
+    CommonUtil commonUtil;
 
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity(response)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+    @Context
+    private UriInfo uriInfo;
+
+    public Response toResponse(Exception exception) {
+        if (exception instanceof CustomeException) {
+            List<ErrorMessage> errors = new ArrayList<>();
+            errors.add(new ErrorMessage(exception.getMessage()));
+
+            return commonUtil.buildErrorResponse("Unable to fetch data", Response.Status.NOT_FOUND, errors, null,uriInfo);
+        } else {
+            List<ErrorMessage> errors = new ArrayList<>();
+            errors.add(new ErrorMessage("Internal server error"));
+
+            return commonUtil.buildErrorResponse("Internal Server Error", Response.Status.INTERNAL_SERVER_ERROR, errors, null,uriInfo);
+        }
     }
-
 }

@@ -2,7 +2,9 @@ package org.BankersApp.util;
 
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.BankersApp.dto.CustomerDTO;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import org.BankersApp.dto.ErrorMessage;
 import org.BankersApp.dto.ResponseDTO;
 
 import java.time.Instant;
@@ -12,22 +14,14 @@ import java.util.List;
 public class CommonUtil {
 
 
-    public ResponseDTO successResponse( String message, int statusCode, String path,List<CustomerDTO> customerDTO) {
-        ResponseDTO response = new ResponseDTO();
-        response.setMsg(message);
-//        response.setStatus(statusCode);
-        response.setPath(path);
-        response.setData(customerDTO);
-        response.setTimestamp(Instant.now());
-        return response;
+    public Response buildErrorResponse(String message, Response.Status status, List<ErrorMessage> errors,Object data, UriInfo uriInfo) {
+        ResponseDTO responseDTO = new ResponseDTO("Failed", message, status.getStatusCode(), errors, data, uriInfo.getPath(), Instant.now());
+        return Response.status(status).entity(responseDTO).build();
     }
 
-    public ResponseDTO errorResponse(String errorMessage, int statusCode, String requestUri) {
-        ResponseDTO response = new ResponseDTO();
-        response.setMsg(errorMessage);
-//        response.setStatus(statusCode);
-        response.setPath(requestUri);
-        return response;
+    public Response buildSuccessResponse(String message, Response.Status status,List<ErrorMessage> errors, Object data, UriInfo uriInfo) {
+        ResponseDTO responseDTO = new ResponseDTO("Success", message, status.getStatusCode(), errors, data, uriInfo.getPath(), Instant.now());
+        return Response.status(status).entity(responseDTO).build();
     }
 
 

@@ -1,17 +1,15 @@
 package org.BankersApp.repository;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-import io.quarkus.panache.common.Parameters;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import org.BankersApp.dto.CustomerDTO;
 import org.BankersApp.entity.Customer;
 
 import java.util.List;
 
 @ApplicationScoped
-public class CustomerRepository implements PanacheRepositoryBase<Customer, Long> {
+public class CustomerRepository implements PanacheRepository<Customer> {
 
     @Inject
     EntityManager entityManager;
