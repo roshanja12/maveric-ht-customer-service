@@ -48,6 +48,7 @@ public class CustomerController {
     UriInfo uriInfo;
 
     @GET
+    @Path("/searchByCustomerId")
     @Operation(summary = "Get all customers", description = "This API endpoint retrieves a list of all customers in the system.")
     @APIResponses(value = {
             @APIResponse(
@@ -61,9 +62,10 @@ public class CustomerController {
             @APIResponse(responseCode = "404", description = "Customer list not found"),
             @APIResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public Response getAllCustomers() throws CustomeException {
-        List<CustomerDTO> customers = customerService.getAllCustomers();
-        return commonUtil.buildSuccessResponse("Retrive data successfully", Response.Status.OK,null, customers, uriInfo);
+    public Response getCustomerByCustomerId(@QueryParam ("customerId") Long customerId) {
+        logger.info("getCustomerByCustomerId method called with customerId: " + customerId);
+        CustomerDTO customers = customerService.getCustomerByCustomerId(customerId);
+        return commonUtil.buildSuccessResponse("Retrieve data successfully", Response.Status.OK,null, customers, uriInfo);
     }
 
     @POST
@@ -81,20 +83,22 @@ public class CustomerController {
                     schema = @Schema(implementation = Customer.class),
                     mediaType = "application/json")
     )
-    public Response createCustomer( Customer customer ) {
+    public Response createCustomer ( Customer customer ) {
     Set<ConstraintViolation<Customer>> violations = validator.validate(customer);
         if (!violations.isEmpty()) {
             List<ErrorMessage> errorList = violations.stream()
                     .map(violation -> new ErrorMessage(violation.getPropertyPath().toString(), violation.getMessage()))
                     .collect(Collectors.toList());
-              return commonUtil.buildErrorResponse("Validation failed", Response.Status.BAD_REQUEST, errorList,null,uriInfo);
+            logger.error("Validation failed: " + errorList);
+            return commonUtil.buildErrorResponse("Validation failed", Response.Status.BAD_REQUEST, errorList,null,uriInfo);
         }
         else {
-            logger.info("created  method controller called");
+            logger.info("createCustomer method controller called");
             CustomerDTO createdCustomer = customerService.createCustomer(customer);
             if (createdCustomer != null) {
                 return commonUtil.buildSuccessResponse("Created data successfully", Response.Status.CREATED,null, createdCustomer, uriInfo);
             } else {
+                logger.error("Failed to create customer");
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
         }
@@ -117,9 +121,9 @@ public class CustomerController {
     })
     public Response getCustomerByCriteria
             (@QueryParam("searchValue") String searchValue)  {
-        logger.info("get customer by id called !!!!!!!!!!!!!!!!!!!>>>>>>>>>>");
+        logger.info("getCustomerByCriteria method called with searchValue: " + searchValue);
         List<CustomerDTO> customers= customerService.getCustomerByCriteria(searchValue);
-        return commonUtil.buildSuccessResponse("Retrive data successfully", Response.Status.OK,null, customers, uriInfo);
+        return commonUtil.buildSuccessResponse("Retrieve data successfully", Response.Status.OK,null, customers, uriInfo);
     }
 
 

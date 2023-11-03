@@ -2,7 +2,6 @@ package org.BankersApp.service;
 
 
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.Mock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.BankersApp.dto.CustomerDTO;
@@ -12,6 +11,7 @@ import org.BankersApp.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.smallrye.common.constraint.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -90,9 +88,25 @@ public class CustomerServiceTest {
         assertEquals("Data not in DB", exception.getMessage());
     }
 
+    @Test
+    public void testGetCustomerByCustomerId_Sucess() {
+        Long customerId = 1L;
+        Customer mockCustomer = new Customer();
+        when(customerRepository.findById(customerId)).thenReturn(mockCustomer);
+        CustomerDTO result = customerService.getCustomerByCustomerId(customerId);
+        assertNotNull(result);
+    }
 
+    @Test
+    public void testGetCustomerByCustomerId_Failed() {
+        Long customerId = 2L;
+        when(customerRepository.findById(customerId)).thenReturn(null);
 
-
+        CustomeException exception = assertThrows(CustomeException.class, () -> {
+            customerService.getCustomerByCustomerId(customerId);
+        });
+        assertEquals("Customer not found in the database.", exception.getMessage());
+    }
 
 
 }
