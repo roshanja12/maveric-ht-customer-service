@@ -25,44 +25,53 @@ public class CustomerService {
 
     @Transactional
     public CustomerDTO createCustomer(Customer customer) {
-        logger.info("created  method service called");
+        logger.info("createCustomer method called");
         try
         {
-            customer.setCreatedAt(Instant.now());
+             customer.setCreatedAt(Instant.now());
              customer.setModifiedAt(Instant.now());
              customerRepository.persist(customer);
             return entityToDTO(customer);}
-        catch (CustomeException ex)
+        catch (Exception ex)
         {
-            throw new CustomeException("Failed to create a data");
+            logger.error("Failed to create a customer: " + ex.getMessage());
+            throw new CustomeException("Failed to create a customer.");
         }
     }
 
     @Transactional
-    public List<CustomerDTO> getAllCustomers() {
-        logger.info("Service called for getCustomer all");
-        List<CustomerDTO> customerList= customerRepository.findAll().stream().map(this::entityToDTO).collect(Collectors.toList());
-        logger.info("CustomerList"+customerList);
-        if(!customerList.isEmpty())
+    public CustomerDTO getCustomerByCustomerId(Long customerId) {
+        logger.info("getCustomerByCustomerId method called");
+        Customer customers = customerRepository.findById(customerId);
+
+        if(customers!=null)
         {
-            return customerList;
+            return entityToDTO(customers);
         }
         else
         {
-            throw new CustomeException("Data not in DB");
+            logger.error("Customer not found in the database with ID: " + customerId);
+            throw new CustomeException("Customer not found in the database.");
         }
     }
 
     @Transactional
     public List<CustomerDTO> getCustomerByCriteria(String searchValue) {
-        List<CustomerDTO> customerList = customerRepository.getCustomerByCriteria(searchValue).stream().map(this::entityToDTO).collect(Collectors.toList());
-        logger.info("CustomerList" + customerList);
+        logger.info("getCustomerByCriteria method called");
+        List<CustomerDTO> customerList;
+        if (searchValue == null || searchValue.isEmpty()) {
+            customerList = customerRepository.findAll().stream().map(this::entityToDTO).collect(Collectors.toList());
+        } else {
+            customerList = customerRepository.getCustomerByCriteria(searchValue).stream().map(this::entityToDTO).collect(Collectors.toList());
+        }
         if (!customerList.isEmpty()) {
             return customerList;
         } else {
-            throw new CustomeException("Data not in DB");
+            logger.error("No customers found in the database with the given Field: " + searchValue);
+            throw new CustomeException("No customers found in the database with the given Field.");
         }
     }
+
 
     public CustomerDTO entityToDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();

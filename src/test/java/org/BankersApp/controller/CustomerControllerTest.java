@@ -8,7 +8,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.BankersApp.dto.CustomerDTO;
 import org.BankersApp.entity.Customer;
-import org.BankersApp.exception.CustomeException;
 import org.BankersApp.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,10 +37,10 @@ public class CustomerControllerTest {
     @Test
     public void testCreateCustomerSuccess() {
         Customer customer = new Customer();
-        customer.setFirstName("Ankush");
-        customer.setLastName("Kadam");
-        customer.setEmail("ankush.kadam@gmail.com");
-        customer.setCity("Pune");
+        customer.setFirstName("FirstName");
+        customer.setLastName("LastName");
+        customer.setEmail("Test@test.com");
+        customer.setCity("City");
         customer.setPhoneNumber(9657395789L);
 
         CustomerDTO customerDTO = new CustomerDTO();
@@ -73,11 +72,12 @@ public class CustomerControllerTest {
     @Test
     public void testCreateCustomerFailure() {
         Customer customer = new Customer();
-        customer.setFirstName("Ankush");
-        customer.setLastName("Kadam");
-        customer.setEmail("ankush.kadam@gmail.com");
-        customer.setCity("Pune");
+        customer.setFirstName("FirstName");
+        customer.setLastName("LastName");
+        customer.setEmail("Test@test.com");
+        customer.setCity("City");
         customer.setPhoneNumber(9657395789L);
+
 
         Mockito.when(customerService.createCustomer(customer)).thenReturn(null);
 
@@ -87,13 +87,25 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void testGetAllCustomers_Success()  {
+    public void testGetCustomerByCustomerId_Success()  {
+        Customer customer = new Customer();
+        customer.setFirstName("FirstName");
+        customer.setLastName("LastName");
+        customer.setEmail("Test@test.com");
+        customer.setCity("City");
+        customer.setPhoneNumber(9657395789L);
 
-        List<CustomerDTO> customers = new ArrayList<>();
-        customers.add(new CustomerDTO());
-        Mockito.when(customerService.getAllCustomers()).thenReturn(customers);
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(customer.getFirstName());
+        customerDTO.setLastName(customer.getLastName());
+        customerDTO.setEmail(customer.getEmail());
+        customerDTO.setCity(customer.getCity());
+        customerDTO.setPhoneNumber(customer.getPhoneNumber());
 
-        Response response = customerController.getAllCustomers();
+
+        Mockito.when(customerService.getCustomerByCustomerId(customer.getCustomerId())).thenReturn(customerDTO);
+
+        Response response = customerController.getCustomerByCustomerId(customer.getCustomerId());
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
