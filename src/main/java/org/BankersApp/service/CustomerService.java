@@ -1,33 +1,22 @@
 package org.BankersApp.service;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
-import jakarta.validation.Valid;
 import org.BankersApp.dto.CustomerDTO;
 import org.BankersApp.entity.Customer;
 import org.BankersApp.exception.CustomeException;
 import org.BankersApp.repository.CustomerRepository;
-import org.jboss.logging.Logger;
-
-
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-
 @ApplicationScoped
 public class CustomerService {
     @Inject
     CustomerRepository customerRepository;
 
-    @Inject
-    Logger logger;
 
 
-    @Transactional
+
+    /*@Transactional
     public CustomerDTO createCustomer(Customer customer) {
         logger.info("created  method service called!!!!!!!!!!!!");
         try
@@ -57,7 +46,7 @@ public class CustomerService {
         }
     }
 
-
+*/
     /**
      * @Rohit
      */
@@ -81,7 +70,7 @@ public class CustomerService {
 
 
 
-    public List<CustomerDTO> getCustomerByCriteria(String searchValue) {
+    /*public List<CustomerDTO> getCustomerByCriteria(String searchValue) {
         List<CustomerDTO> customerList = customerRepository.getCustomerByCriteria(searchValue).stream().map(this::entityToDTO).collect(Collectors.toList());
         logger.info("CustomerList++++++" + customerList);
         if (customerList.size() != 0) {
@@ -89,7 +78,7 @@ public class CustomerService {
         } else {
             throw new CustomeException("Not found in DB");
         }
-    }
+    }*/
 
     /**
      * @Rohit

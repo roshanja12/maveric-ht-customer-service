@@ -1,11 +1,7 @@
 package org.BankersApp.mapper;
-
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
-import org.BankersApp.entity.Customer;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -23,13 +19,11 @@ public class ValidationExceptionHandler implements ExceptionMapper<ConstraintVio
         String timestamp = dateFormat.format(new Date());
         response.put("timestamp", timestamp);
 
-        // Build the Response object
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(response)
                 .build();
 
     }
-
     private List<String> getValidationErrors(ConstraintViolationException exception) {
         List<String> errors = new ArrayList<>();
         errors.add(exception.getMessage());

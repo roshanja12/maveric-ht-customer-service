@@ -9,9 +9,6 @@ import org.BankersApp.dto.ErrorMessage;
 import org.BankersApp.exception.CustomeException;
 import org.BankersApp.util.CommonUtil;
 import java.util.*;
-
-
-
 @Provider
 public class CustomeExceptionMapper implements ExceptionMapper<CustomeException> {
 
@@ -36,6 +33,4 @@ public class CustomeExceptionMapper implements ExceptionMapper<CustomeException>
             return commonUtil.buildErrorResponse("Internal Server Error", Response.Status.INTERNAL_SERVER_ERROR, errors, null,uriInfo);
         }
     }
-
-
 }

@@ -3,15 +3,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.validator.constraints.Email;
 import java.time.Instant;
-
-
 @Entity
 @Data
 @Table(name="customers")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

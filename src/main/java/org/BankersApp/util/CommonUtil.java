@@ -1,6 +1,4 @@
 package org.BankersApp.util;
-
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -13,8 +11,6 @@ import java.util.List;
 
 @ApplicationScoped
 public class CommonUtil {
-
-
     public Response buildErrorResponse(String message, Response.Status status, List<ErrorMessage> errors, Object data, UriInfo uriInfo) {
         ResponseDTO responseDTO = new ResponseDTO("Failed", message, status.getStatusCode(), errors, data, uriInfo.getPath(), Instant.now());
         return Response.status(status).entity(responseDTO).build();

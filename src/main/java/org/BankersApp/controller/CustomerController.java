@@ -1,7 +1,6 @@
 package org.BankersApp.controller;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -9,8 +8,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.BankersApp.dto.CustomerDTO;
 import org.BankersApp.dto.ErrorMessage;
-import org.BankersApp.dto.ResponseDTO;
-import org.BankersApp.exception.CustomeException;
 import org.BankersApp.util.CommonUtil;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -24,8 +21,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.BankersApp.entity.Customer;
 import org.BankersApp.service.CustomerService;
 import org.jboss.logging.Logger;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,7 +44,7 @@ public class CustomerController {
     @Inject
     Logger logger;
 
-    @GET
+    /*@GET
     @Operation(summary = "Get all customers", description = "Retrieve a list of all customers")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "List of customers"),
@@ -137,10 +132,10 @@ public class CustomerController {
             (@QueryParam("searchValue") String searchValue) {
         logger.info("get customer by id called !!!!!!!!!!!!!!!!!!!>>>>>>>>>>");
         return customerService.getCustomerByCriteria(searchValue);
-//        ResponseDTO setResponse = commonUtil.successResponse("created",200,customers);
+//              logger.error("Failed to delete customer with ID: " + customerId);      ResponseDTO setResponse = commonUtil.successResponse("created",200,customers);
 
     }
-
+*/
 
     /**
      * @Rohit
@@ -150,52 +145,60 @@ public class CustomerController {
     @Path("/{customerId}")
     @Operation(summary = "Update a customer", description = "This API updates an existing customer by CustomerID")
     @APIResponses(value = {
-            @APIResponse(responseCode = "200", description = "Customer updated successfully"),
+            @APIResponse(responseCode = "200", description = "Customer updated successfully", content = @Content(
+                    schema = @Schema(implementation = Customer.class)
+            )),
             @APIResponse(responseCode = "404", description = "Customer not found"),
             @APIResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public Response updateCustomer(@PathParam("customerId") Long id, @Valid Customer customer, UriInfo uriInfo) {
+    public Response updateCustomer(@PathParam("customerId") Long id, Customer customer, UriInfo uriInfo) {
         customer.setCustomerId(id);
-        CustomerDTO updatedCustomer;
-        // Use validation annotations to validate the customer object
         Set<ConstraintViolation<Customer>> violations = validator.validate(customer);
         if (!violations.isEmpty()) {
             List<ErrorMessage> errorList = violations.stream()
                     .map(violation -> new ErrorMessage(violation.getPropertyPath().toString(), violation.getMessage()))
                     .collect(Collectors.toList());
             return commonUtil.buildErrorResponse("Validation failed", Response.Status.BAD_REQUEST, errorList, null, uriInfo);
+        } else {
+            CustomerDTO updatedCustomer = customerService.updateCustomer(customer);
+            if (updatedCustomer != null) {
+                logger.info("Customer with ID " + id + " updated successfully.");
+                return commonUtil.buildSuccessResponse("Updated Successfully", Response.Status.OK, null, updatedCustomer, uriInfo);
+            }
+            logger.error("Failed to update customer with ID: " + id);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-            updatedCustomer = customerService.updateCustomer(customer);
-            return commonUtil.buildSuccessResponse("Updated Successfully", Response.Status.OK, null, updatedCustomer, uriInfo);
-
-        }
-
-
-
-
-
-
-
-
-    /**
-         * @Rohit
-         */
-
-        @DELETE
+    }
+    @DELETE
         @Path("/{customerId}")
         @Operation(summary = "Delete a customer", description = "This API deletes an existing customer by CustomerID")
 
         @APIResponses(value = {
-                @APIResponse(responseCode = "200", description = "Customer deleted successfully"),
-                @APIResponse(responseCode = "404", description = "Customer not found"),
+                @APIResponse(responseCode = "200", description = "Customer deleted successfully",content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = Customer.class)
+                )),
+                @APIResponse(responseCode = "404", description = "Customer not found",content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = ErrorMessage.class)
+                )),
                 @APIResponse(responseCode = "500", description = "Internal Server Error")
         })
+        @RequestBody(
+                content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = Customer.class),
+                        examples = @ExampleObject(value = "{\"customerId\": 1, \"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john@example.com\", \"phoneNumber\": 1234567890, \"city\": \"New York\"}")
+                )
+        )
 
         public Response deleteCustomer(@PathParam("customerId") Long customerId, UriInfo uriInfo) {
             CustomerDTO deletedCustomer = customerService.deleteCustomer(customerId);
             if (deletedCustomer != null) {
+                logger.info("Customer with ID " + customerId + " deleted successfully.");
                 return commonUtil.buildSuccessResponse("Customer deleted successfully.", Response.Status.OK, null, deletedCustomer,uriInfo);
             } else {
+                logger.error("Failed to delete customer with ID: " + customerId);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();            }
         }
 
