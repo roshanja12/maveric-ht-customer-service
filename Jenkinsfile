@@ -2,7 +2,7 @@ pipeline {
     agent {
         kubernetes {
             label 'docker-agent' // Label for the custom agent pod template
-            defaultContainer 'jnlp' // JNLP container for Jenkins communication
+            //defaultContainer 'jnlp' // JNLP container for Jenkins communication
             yaml """
 apiVersion: v1
 kind: Pod
