@@ -27,6 +27,8 @@ spec:
         stage('Build Docker Image') {
             steps {
                 script {
+
+                    sh 'echo in stage'
                     sh 'docker build -f src/main/docker/Dockerfile.jvm -t quarkus/customer-jvm .'
                 }
             }
@@ -36,7 +38,7 @@ spec:
     post {
         always {
             // Clean up Docker resources if needed
-            sh 'docker rmi my-docker-image:latest'
+            sh 'echo test'
         }
     }
 }
