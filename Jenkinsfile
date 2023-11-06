@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            label 'docker-agent' // Label for the custom agent pod template
+            label 'docker-agent-1' // Label for the custom agent pod template
             customWorkspace '/var/jenkins/workspace' // Set a custom workspace location if needed
 
             defaultContainer 'jnlp'
@@ -19,7 +19,7 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                container('docker-agent') {
+                container('docker-agent-1') {
                     // Inside this container, Docker is available
                     sh 'docker build -f src/main/docker/Dockerfile.jvm -t quarkus/customer-jvm .'
                 }
@@ -30,7 +30,7 @@ pipeline {
 
     post {
         always {
-            // You can perform post-pipeline actions here
+            sh "echo ls"
         }
     }
 }
