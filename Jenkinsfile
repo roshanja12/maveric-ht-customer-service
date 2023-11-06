@@ -12,7 +12,7 @@ metadata:
 spec:
   containers:
     - name: docker
-      image: docker:19.03.13 // Use a Docker image with the desired version
+      image: alpine:latest // Use a Docker image with the desired version
       command:
         - cat
       resources:
