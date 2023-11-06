@@ -9,7 +9,6 @@ kind: Pod
 metadata:
   labels:
     jenkins: docker-agent
-    namespace: maveric-ht-dev
 spec:
   containers:
     - name: docker
@@ -27,9 +26,9 @@ spec:
         stage('Build Docker Image') {
             steps {
                 script {
-
-                    sh 'echo in stage'
-                    sh 'docker build -f src/main/docker/Dockerfile.jvm -t quarkus/customer-jvm .'
+                    node('docker-agent') { // Use the label of your custom agent pod
+                        sh 'docker build -f src/main/docker/Dockerfile.jvm -t quarkus/customer-jvm .'
+                    }
                 }
             }
         }
@@ -37,8 +36,9 @@ spec:
     }
     post {
         always {
-            // Clean up Docker resources if needed
-            sh 'echo test'
+            node('docker-agent') { // Use the label of your custom agent pod
+                sh 'docker rmi my-docker-image:latest'
+            }
         }
     }
 }
