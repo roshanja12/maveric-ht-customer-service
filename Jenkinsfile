@@ -9,6 +9,7 @@ kind: Pod
 metadata:
   labels:
     jenkins: docker-agent
+    namespace: maveric-ht-dev
 spec:
   containers:
     - name: docker
