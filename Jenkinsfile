@@ -2,7 +2,14 @@ pipeline {
     agent any  // Use any available agent for the pipeline
 
     stages {
-        stage('Build Docker Image') {
+        stage("Docker Build") {
+            steps {
+              sh '''
+                  oc start-build -F red-api --from-dir=./api/
+                  '''
+            }
+        }
+          stage('Build Docker Image') {
             steps {
                 script {
                     // Use docker.inside to run Docker commands
