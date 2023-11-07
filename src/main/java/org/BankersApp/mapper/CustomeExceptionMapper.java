@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import org.BankersApp.dto.ErrorMessage;
-import org.BankersApp.exception.CustomeException;
+import org.BankersApp.exception.CustomerException;
 import org.BankersApp.util.CommonUtil;
 
 
@@ -28,7 +28,7 @@ public class CustomeExceptionMapper implements ExceptionMapper<Exception> {
     private UriInfo uriInfo;
 
     public Response toResponse(Exception exception) {
-        if (exception instanceof CustomeException) {
+        if (exception instanceof CustomerException) {
             List<ErrorMessage> errors = new ArrayList<>();
             errors.add(new ErrorMessage(exception.getMessage()));
 

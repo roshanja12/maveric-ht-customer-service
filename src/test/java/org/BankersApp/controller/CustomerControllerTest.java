@@ -13,10 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @QuarkusTest
@@ -122,4 +125,66 @@ public class CustomerControllerTest {
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
     }
+
+    /**
+     * @author rohit
+     */
+
+    @Test
+    public void testDeleteCustomerSuccess() {
+        Long customerId = 1L;
+        UriInfo uriInfo = mock(UriInfo.class);
+        CustomerDTO deletedCustomerDTO = new CustomerDTO();
+        deletedCustomerDTO.setCustomerId(customerId);
+        deletedCustomerDTO.setFirstName("Rohit");
+        when(customerService.deleteCustomer(customerId)).thenReturn(deletedCustomerDTO);
+        Response response = customerController.deleteCustomer(customerId, uriInfo);
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
+
+    @Test
+    public void testDeleteglobalexception() {
+        Long customerId = 10L;
+        UriInfo uriInfo = mock(UriInfo.class);
+        when(customerService.deleteCustomer(customerId)).thenReturn(null);
+        Response response = customerController.deleteCustomer(customerId, uriInfo);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+    }
+
+
+    @Test
+    public void testUpdateCustomerSuccess() {
+        Long customerId = 1L;
+        Customer customer = new Customer();
+        customer.setFirstName("John");
+        customer.setLastName("Doe");
+        customer.setEmail("johndoe@example.com");
+        customer.setPhoneNumber(Long.valueOf("9403821914"));
+        customer.setCity("New York");
+        customer.setCreatedAt(Instant.now());
+        customer.setModifiedAt(Instant.now());
+        CustomerDTO updatedCustomer = new CustomerDTO();
+        Mockito.when(customerService.updateCustomer(customer)).thenReturn(updatedCustomer);
+        Response response = customerController.updateCustomer(customerId, customer, uriInfo);
+        assertEquals(200, response.getStatus());
+        Mockito.verify(customerService, Mockito.times(1)).updateCustomer(customer);
+        Mockito.reset(customerService);
+    }
+
+    @Test
+    public void testUpdateCustomerFailure() {
+        Long customerId = 10L;
+        Customer customer = new Customer();
+        customer.setFirstName(null);
+        customer.setLastName(null);
+        customer.setEmail(null);
+        customer.setPhoneNumber(null);
+        customer.setCity(null);
+        customer.setCreatedAt(null);
+        customer.setModifiedAt(null);
+        Mockito.when(customerService.updateCustomer(customer)).thenReturn(null);
+        Response response = customerController.updateCustomer(customerId, customer, uriInfo);
+        assertEquals(400, response.getStatus());
+    }
+
+}
