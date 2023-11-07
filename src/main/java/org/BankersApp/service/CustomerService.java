@@ -6,11 +6,13 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.BankersApp.dto.CustomerDTO;
 import org.BankersApp.entity.Customer;
-import org.BankersApp.exception.CustomeException;
+import org.BankersApp.exception.CustomerException;
+import org.BankersApp.exception.ResourceNotFoundException;
 import org.BankersApp.repository.CustomerRepository;
 import org.jboss.logging.Logger;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -35,7 +37,7 @@ public class CustomerService {
         catch (Exception ex)
         {
             logger.error("Failed to create a customer: " + ex.getMessage());
-            throw new CustomeException("Failed to create a customer.");
+            throw new CustomerException("Failed to create a customer.");
         }
     }
 
@@ -51,7 +53,7 @@ public class CustomerService {
         else
         {
             logger.error("Customer not found in the database with ID: " + customerId);
-            throw new CustomeException("Customer not found in the database.");
+            throw new CustomerException("Customer not found in the database.");
         }
     }
 
@@ -68,9 +70,40 @@ public class CustomerService {
             return customerList;
         } else {
             logger.error("No customers found in the database with the given Field: " + searchValue);
-            throw new CustomeException("No customers found in the database with the given Field.");
+            throw new CustomerException("No customers found in the database with the given Field.");
         }
     }
+
+    @Transactional
+    public CustomerDTO updateCustomer(Customer customer)  {
+
+        Customer existingCustomer = customerRepository.findById(customer.getCustomerId());
+        System.out.println("hello");
+        if(!Optional.ofNullable(existingCustomer).isEmpty()) {
+            existingCustomer.setModifiedAt(Instant.now());
+            existingCustomer.setEmail(customer.getEmail());
+            existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+            existingCustomer.setCity(customer.getCity());
+            customerRepository.merge(existingCustomer);
+            return entityToDTO(existingCustomer);
+        } else {
+            throw new CustomerException("Customer with ID " + customer.getCustomerId() + " not found");
+        }
+    }
+
+    @Transactional
+    public CustomerDTO deleteCustomer(Long customerId) {
+        Customer existingCustomer = customerRepository.findById(customerId);
+        if (Optional.ofNullable(existingCustomer).isPresent()) {
+            CustomerDTO deletedCustomerDTO = entityToDTO(existingCustomer);
+            customerRepository.deleteById(customerId);
+            return deletedCustomerDTO;
+        } else {
+            throw new ResourceNotFoundException("Customer with ID " + customerId + " not found");
+        }
+    }
+
+
 
 
     public CustomerDTO entityToDTO(Customer customer) {

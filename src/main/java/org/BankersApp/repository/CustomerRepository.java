@@ -22,4 +22,7 @@ public class CustomerRepository implements PanacheRepository<Customer> {
                 .setParameter("searchValue", "%" + searchValue + "%")
                 .getResultList();
     }
+
+    public void merge(Customer existingCustomer) {
+    }
 }

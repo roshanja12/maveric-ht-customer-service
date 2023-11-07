@@ -31,7 +31,6 @@ public class Customer {
     @NotNull
     @Size(min = 3, max = 25)
     private String lastName;
-
     @Email(message = "Invalid email address")
     private String email;
     @NotNull
@@ -41,7 +40,6 @@ public class Customer {
     private String city;
     @Schema(hidden = true)
     private Instant createdAt;
-
     @Schema(hidden = true)
     private Instant modifiedAt;
 }
