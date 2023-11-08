@@ -2,26 +2,22 @@ pipeline {
     agent any  // Use any available agent for the pipeline
 
     stages {
-        stage('Build Docker Image') {
+        stage('Build Container Image') {
             steps {
                 script {
-                    // Use docker.inside to run Docker commands
-                    docker.withRegistry('https://hub.docker.com/') {
-                        // Build the Docker image
-                        docker.image('docker:latest').inside {
-                            sh 'docker build -f src/main/docker/Dockerfile.jvm -t quarkus/customer-jvm .'
-                        }
-                    }
+                    // Build the container image using buildah
+                    sh 'buildah bud -t my-container-image -f src/main/docker/Dockerfile.jvm .'
                 }
             }
-        }   
+        }
+
         // Add more stages for your pipeline
     }
 
     post {
         always {
-            // Clean up Docker resources if needed
-            sh 'docker rmi my-docker-image:latest'
+            // Clean up Container image if needed (remove it)
+            sh 'podman rmi my-container-image'
         }
     }
 }
