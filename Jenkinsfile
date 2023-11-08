@@ -2,7 +2,7 @@ pipeline {
     agent any  // Use any available agent for the pipeline
 
     stages {
-          stage('Build Docker Image') {
+    /*     stage('Build Docker Image') {
             steps {
                 script {
                     // Use docker.inside to run Docker commands
@@ -14,7 +14,24 @@ pipeline {
                     }
                 }
             }
+        }   */
+        stage('Install buildah and podman') {
+            steps {
+                script {
+                    sh 'sudo yum install -y buildah podman'
+            }
+          }
         }
+        stage('Build Container Image') {
+            steps {
+                script {
+            // Build the container image using buildah
+                    sh 'buildah bud -t my-image:latest -f src/main/docker/Dockerfile .'
+        }
+    }
+  
+}
+
         // Add more stages for your pipeline
     }
 
