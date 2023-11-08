@@ -77,13 +77,10 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
-FROM jenkins/agent:latest
 FROM registry.access.redhat.com/ubi8/openjdk-17:1.16
 
 ENV LANGUAGE='en_US:en'
 
-USER root
-RUN apt-get update && apt-get install -y docker.io
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
