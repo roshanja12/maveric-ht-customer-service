@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.BankersApp.dto.CustomerDTO;
 import org.BankersApp.dto.ErrorMessage;
+import org.BankersApp.service.KafkaService;
 import org.BankersApp.util.CommonUtil;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -46,6 +47,9 @@ public class CustomerController {
 
     @Inject
     UriInfo uriInfo;
+
+    @Inject
+    KafkaService kafkaService;
 
     @GET
     @Path("/searchByCustomerId")
@@ -96,6 +100,7 @@ public class CustomerController {
             logger.info("createCustomer method controller called");
             CustomerDTO createdCustomer = customerService.createCustomer(customer);
             if (createdCustomer != null) {
+                kafkaService.customerProducer(createdCustomer);
                 return commonUtil.buildSuccessResponse("Created data successfully", Response.Status.CREATED,null, createdCustomer, uriInfo);
             } else {
                 logger.error("Failed to create customer");
