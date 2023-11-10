@@ -1,0 +1,5 @@
+package org.BankersApp.entity;
+
+public enum Type {
+    CREATE,UPDATE,CUSTOMER_CREATED,SAVING_ACCOUNT_CREATED,LOAN_ACCOUNT_CREATED
+}
