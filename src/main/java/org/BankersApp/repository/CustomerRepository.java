@@ -16,7 +16,7 @@ public class CustomerRepository implements PanacheRepository<Customer> {
 
     public List<Customer> getCustomerByCriteria(String searchValue) {
 
-        String nativeQuery = "SELECT * FROM customers WHERE CAST(customerId AS TEXT) ILIKE :searchValue OR firstName ILIKE :searchValue OR CAST(phoneNumber AS TEXT) ILIKE :searchValue OR lastName ILIKE :searchValue OR city ILIKE :searchValue";
+        String nativeQuery = "SELECT * FROM customers WHERE CAST(customerId AS TEXT) ILIKE :searchValue OR firstName ILIKE :searchValue OR CAST(phoneNumber AS TEXT) ILIKE :searchValue OR lastName ILIKE :searchValue OR city ILIKE :searchValue OR email ILIKE :searchValue" ;
 
         return entityManager.createNativeQuery(nativeQuery, Customer.class)
                 .setParameter("searchValue", "%" + searchValue + "%")
